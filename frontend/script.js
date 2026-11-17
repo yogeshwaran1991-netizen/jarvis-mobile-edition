@@ -1,6 +1,6 @@
 
 const API_KEY = "AQ.Ab8RN6JH6CPUrLvdkNLGPOvW5ePGr-JfqQM_OlUu40qpwx-DLQ";
-const MODEL = "gemini-3.8-flash";
+const MODEL = "gemini-3.6-flash";
 
 const chat = document.getElementById("chat");
 const input = document.getElementById("msg");
