@@ -1,20 +1,24 @@
 
 // ========================================
-// J.A.R.V.I.S - GEMINI AI CONNECTION
+// J.A.R.V.I.S - GEMINI AI BRAIN
 // ========================================
 
-const API_KEY = "PASTE_YOUR_NEW_GEMINI_API_KEY_HERE";
-const MODEL = "gemini-3.8-flash";
+// YOUR API KEY
+const API_KEY = "";
 
+// GEMINI MODEL
+const MODEL = "gemini-3.6-flash";
+
+// HTML ELEMENTS
 const chat = document.getElementById("chat");
 const input = document.getElementById("msg");
 const send = document.getElementById("send");
 
-// Conversation memory
+// CONVERSATION MEMORY
 let conversation = [];
 
 // ========================================
-// SEND MESSAGE
+// SEND MESSAGE TO GEMINI
 // ========================================
 
 async function sendMessage() {
@@ -23,19 +27,17 @@ async function sendMessage() {
 
     if (!userMessage) return;
 
-    if (!API_KEY || API_KEY === "PASTE_YOUR_NEW_GEMINI_API_KEY_HERE") {
-        add("J.A.R.V.I.S: API KEY NOT CONFIGURED.", "ai");
-        return;
-    }
-
-    // Display user message
     add("YOU: " + userMessage, "user");
 
     input.value = "";
+
     send.disabled = true;
     send.textContent = "WAIT...";
 
-    const loading = add("J.A.R.V.I.S: PROCESSING...", "ai");
+    const loading = add(
+        "J.A.R.V.I.S: PROCESSING...",
+        "ai"
+    );
 
     conversation.push({
         role: "user",
@@ -55,9 +57,10 @@ async function sendMessage() {
                 },
 
                 body: JSON.stringify({
+
                     systemInstruction: {
                         parts: [{
-                            text: "You are J.A.R.V.I.S, a highly intelligent, professional AI assistant inspired by Iron Man. Address the user as Sir. Be helpful, precise and conversational."
+                            text: "You are J.A.R.V.I.S, an advanced personal AI assistant inspired by Iron Man. Address the user as Sir. Be intelligent, professional, helpful and precise. Give clear answers."
                         }]
                     },
 
@@ -67,6 +70,7 @@ async function sendMessage() {
                         temperature: 0.7,
                         maxOutputTokens: 2048
                     }
+
                 })
             }
         );
@@ -75,7 +79,8 @@ async function sendMessage() {
 
         if (!response.ok) {
             throw new Error(
-                data?.error?.message || "Gemini API request failed."
+                data?.error?.message ||
+                "Gemini API connection failed."
             );
         }
 
@@ -88,7 +93,7 @@ async function sendMessage() {
             throw new Error("No response received from Gemini.");
         }
 
-        // Save AI response for conversation memory
+        // SAVE AI RESPONSE
         conversation.push({
             role: "model",
             parts: [{ text: aiReply }]
@@ -100,7 +105,6 @@ async function sendMessage() {
 
         console.error("JARVIS ERROR:", error);
 
-        // Remove failed user request from history
         conversation.pop();
 
         loading.innerText =
@@ -110,10 +114,11 @@ async function sendMessage() {
 
         send.disabled = false;
         send.textContent = "SEND";
-        input.focus();
 
         chat.scrollTop = chat.scrollHeight;
+
     }
+
 }
 
 // ========================================
@@ -125,6 +130,7 @@ function add(text, who) {
     const message = document.createElement("div");
 
     message.className = "msg " + who;
+
     message.innerText = text;
 
     chat.appendChild(message);
@@ -132,23 +138,29 @@ function add(text, who) {
     chat.scrollTop = chat.scrollHeight;
 
     return message;
+
 }
 
 // ========================================
-// BUTTON EVENT
+// SEND BUTTON
 // ========================================
 
 send.addEventListener("click", sendMessage);
 
 // ========================================
-// ENTER KEY EVENT
+// ENTER KEY SUPPORT
 // ========================================
 
 input.addEventListener("keydown", function(event) {
 
     if (event.key === "Enter") {
+
         event.preventDefault();
+
         sendMessage();
+
     }
 
 });
+
+console.log("J.A.R.V.I.S SYSTEM INITIALISED");
