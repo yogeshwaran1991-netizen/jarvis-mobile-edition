@@ -4,7 +4,7 @@
 // ========================================
 
 // YOUR API KEY
-const API_KEY = "YOUR_NEW_GEMINI_API_KEY";
+const API_KEY = "AQ.Ab8RN6L3xqFed4dKZIKyfqkgyGWW9SAQjk3fXyTY8L312pANAg";
 
 // GEMINI MODEL
 const MODEL = "gemini-3.6-flash";
