@@ -1,36 +1,22 @@
 
-// ========================================
-// J.A.R.V.I.S - GEMINI AI BRAIN
-// ========================================
+const API_KEY = "AQ.Ab8RN6JH6CPUrLvdkNLGPOvW5ePGr-JfqQM_OlUu40qpwx-DLQ";
+const MODEL = "gemini-3.8-flash";
 
-// YOUR API KEY
-const API_KEY = "AQ.Ab8RN6L3xqFed4dKZIKyfqkgyGWW9SAQjk3fXyTY8L312pANAg";
-
-// GEMINI MODEL
-const MODEL = "gemini-3.6-flash";
-
-// HTML ELEMENTS
 const chat = document.getElementById("chat");
 const input = document.getElementById("msg");
 const send = document.getElementById("send");
 
-// CONVERSATION MEMORY
 let conversation = [];
-
-// ========================================
-// SEND MESSAGE TO GEMINI
-// ========================================
 
 async function sendMessage() {
 
     const userMessage = input.value.trim();
 
-    if (!userMessage) return;
+    if (!userMessage || send.disabled) return;
 
     add("YOU: " + userMessage, "user");
 
     input.value = "";
-
     send.disabled = true;
     send.textContent = "WAIT...";
 
@@ -50,27 +36,21 @@ async function sendMessage() {
             `https://generativelanguage.googleapis.com/v1beta/models/${MODEL}:generateContent`,
             {
                 method: "POST",
-
                 headers: {
                     "Content-Type": "application/json",
                     "x-goog-api-key": API_KEY
                 },
-
                 body: JSON.stringify({
-
                     systemInstruction: {
                         parts: [{
-                            text: "You are J.A.R.V.I.S, an advanced personal AI assistant inspired by Iron Man. Address the user as Sir. Be intelligent, professional, helpful and precise. Give clear answers."
+                            text: "You are J.A.R.V.I.S, an intelligent personal AI assistant. Address the user as Sir. Be professional, helpful and precise."
                         }]
                     },
-
                     contents: conversation,
-
                     generationConfig: {
                         temperature: 0.7,
                         maxOutputTokens: 2048
                     }
-
                 })
             }
         );
@@ -79,21 +59,19 @@ async function sendMessage() {
 
         if (!response.ok) {
             throw new Error(
-                data?.error?.message ||
-                "Gemini API connection failed."
+                data?.error?.message || "Gemini API error"
             );
         }
 
         const aiReply = data?.candidates?.[0]?.content?.parts
-            ?.filter(part => part.text)
-            .map(part => part.text)
+            ?.filter(p => p.text)
+            .map(p => p.text)
             .join("\n");
 
         if (!aiReply) {
-            throw new Error("No response received from Gemini.");
+            throw new Error("Gemini returned no response.");
         }
 
-        // SAVE AI RESPONSE
         conversation.push({
             role: "model",
             parts: [{ text: aiReply }]
@@ -103,7 +81,7 @@ async function sendMessage() {
 
     } catch (error) {
 
-        console.error("JARVIS ERROR:", error);
+        console.error(error);
 
         conversation.pop();
 
@@ -114,53 +92,34 @@ async function sendMessage() {
 
         send.disabled = false;
         send.textContent = "SEND";
-
         chat.scrollTop = chat.scrollHeight;
+        input.focus();
 
     }
-
 }
-
-// ========================================
-// DISPLAY CHAT MESSAGES
-// ========================================
 
 function add(text, who) {
 
     const message = document.createElement("div");
 
     message.className = "msg " + who;
-
     message.innerText = text;
 
     chat.appendChild(message);
-
     chat.scrollTop = chat.scrollHeight;
 
     return message;
-
 }
 
-// ========================================
-// SEND BUTTON
-// ========================================
-
 send.addEventListener("click", sendMessage);
-
-// ========================================
-// ENTER KEY SUPPORT
-// ========================================
 
 input.addEventListener("keydown", function(event) {
 
     if (event.key === "Enter") {
-
         event.preventDefault();
-
         sendMessage();
-
     }
 
 });
 
-console.log("J.A.R.V.I.S SYSTEM INITIALISED");
+console.log("J.A.R.V.I.S ONLINE");
